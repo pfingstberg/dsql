@@ -48,3 +48,43 @@ for i,j in zip(a[6::2],a[7::2]):
     print(linia1)
 #oper='P'	
 #wart='^(190|192)$'
+#%%
+# zamiast *** rekord_slownika[5] *** będzie to samo z dodanym rekord_slownika_kolumnowe(rekord_slownika)
+
+for rekord_slownika in dmpk:
+    if rekord_slownika[4]==2:
+        rekord = list(rekord_slownika)
+        print(rekord[0:3],rekord[5],rekord[6:-1])
+#%%
+def z_bazy(sql):
+    import cx_Oracle
+    con = cx_Oracle.connect('bsf/bsf@localhost:1521/xe',encoding="UTF-8")
+    curs = con.cursor()         # pusty kursor
+    curs.execute(sql)
+    lista_rekordow  = list()    # pusta lista na rekordy
+    for rekord in curs:
+        lista_rekordow.append(rekord)
+    con.close()
+    return lista_rekordow
+#%%
+slownik_w_bazie = 'TD_DMPK' # nazwa słownika w bazie Oracle
+dmpk=z_bazy('select * from '+slownik_w_bazie)
+sql="SELECT   table_name, column_name                          \
+     FROM     all_tab_columns                                  \
+     WHERE    owner='BSF' and table_name='"+slownik_w_bazie+"' \
+     ORDER BY column_id"
+cols  = z_bazy(sql)
+dmpkattr = [rekord[1] for rekord in cols]
+dmpkattrcols = list()
+for i in zip(dmpkattr[7::2]):
+    dmpkattrcols.append(i[0])
+#podwójna pętla: po rekordach słownika, po atrybutach kolumnowych
+#będzie użyta przy wyborze i w klauzuli case
+for rekord in dmpk:
+    # zaczynam od atrybutu nr 6
+    i=6
+    for attr in dmpkattrcols:
+        atrybut =attr
+        operator=rekord[i]
+        wartosc =rekord[i+1][0:20]
+        print(atrybut,operator,wartosc)
