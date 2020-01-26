@@ -49,6 +49,18 @@ for i,j in zip(a[6::2],a[7::2]):
 #oper='P'	
 #wart='^(190|192)$'
 #%%
+def z_wark(dmpkrek=list()): # na wejściu lista (rekord słownika DMPK)
+    warunek = dmpkrek[5]
+    reszta  = dmpkrek[6:-1]
+    dodatek = warunek + ' and regexp' + reszta[1] # 
+    return dodatek # np. and ID_POZ regexp '^(190|192)$'
+
+dmpkattr=['A0','A1','A2','A3','CZY_WARUNEK','WIDP','ID_POZ','KOMENTARZ']
+rek = ['0','1','2','3','2','nr_klienta6 is null','P','^(190|192)$','test']
+#print(rek[6:-1])
+print(z_wark(rek))
+
+#%%
 # zamiast *** rekord_slownika[5] *** będzie to samo z dodanym rekord_slownika_kolumnowe(rekord_slownika)
 
 for rekord_slownika in dmpk:
