@@ -49,25 +49,28 @@ for i,j in zip(a[6::2],a[7::2]):
 #oper='P'	
 #wart='^(190|192)$'
 #%%
-def z_wark(dmpkrek=list()): # na wejściu lista (rekord słownika DMPK)
+def z_wark(dmpkrek=list(),dmpkattrcols=list()): 
+# na wejściu listy: (rekord słownika DMPK) (lista DMPKATTRCOLS atrybutów kolumnowych)
     warunek = dmpkrek[5]
     reszta  = dmpkrek[6:-1]
     ind=0
-    for opw,war in zip(reszta[0::2],reszta[1::2]):
+    dod=''
+    for opw,wreg in zip(reszta[0::2],reszta[1::2]): # operator warunku i wyrażenie regularne
         if opw=='P':
-            op='and'
+            op=' and'
         elif opw=='N':
-            op='and not'
-        whenk = op + war
-    ind+=1
-    dodatek = warunek + ' **regexp** ' + whenk #  to_do: wykorzystanie dmpkattrcols[ind]
+            op=' and not'
+        whenk = op + ' regexp_like(' + dmpkattrcols[ind] + ',' + "'"+wreg +"'"+')'
+        dod = dod + whenk
+        ind+=1
+    dodatek = warunek + dod
     return dodatek # np. and ID_POZ regexp '^(190|192)$'
 
-dmpkattr=['A0','A1','A2','A3','CZY_WARUNEK','WIDP','ID_POZ','KOMENTARZ']
-dmpkattrcols=['ID_POZ']
-rek = ['0','1','2','3','2','nr_klienta6 is null','P','^(190|192)$','test']
+dmpkattr=['A0','A1','A2','A3','CZY_WARUNEK','WIDP','ID_POZ','WTEST','TESTKOL','KOMENTARZ']
+dmpkattrcols=['ID_POZ','TESTKOL']
+rek = ['0','1','2','3','2','nr_klienta6 is null','P','^(190|192)$','P','.*','test']
 #print(rek[6:-1])
-print(z_wark(rek))
+print(z_wark(rek,dmpkattrcols))
 
 #%%
 # zamiast *** rekord_slownika[5] *** będzie to samo z dodanym rekord_slownika_kolumnowe(rekord_slownika)
