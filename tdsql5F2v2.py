@@ -90,7 +90,10 @@ dodaj('  ,  case',zapytanie)        # dołączenie do tekstu zapytania 'case'
 if ile2>0:
     for rekord_slownika in dmpk:
         if rekord_slownika[4] == 2:     # (tylko rekordy słownika mające CZY_WARUNEK=2)
-            dodaj('         when '+rekord_slownika[5]+' then '+rekord_slownika[2],zapytanie)
+            # tu trzeba stworzyć fragment z warunków kolumnowych i uzupełnić część w 'when'
+            when5 = rekord_slownika[5]
+            whenk = ' and ID_POZ regexp 190|192 zaślepka'
+            dodaj('         when '+when5+whenk+' then '+rekord_slownika[2],zapytanie)
     dodaj('         else null',zapytanie)
 else:
     dodaj('         when 1=1 then null',zapytanie)
@@ -101,11 +104,12 @@ dodaj('from ',zapytanie)            # dołączenie do tekstu zapytania 'from'
 dodaj(BAZA+'.'+TABELA,zapytanie)    # dołączenie do tekstu zapytania nazwy schematu i tabeli
 dodaj("where HDB_ID_BATCH_EXEC='"+BATCH+"' and (1=0",zapytanie) # dołączenie do tekstu zapytania 'where ...'
 for rekord_slownika in dmpk:     # dołączenie do tekstu zapytania warunków WARUNEK ze słownika
-    if rekord_slownika[4] == 2:     # (tylko rekordy słownika mające CZY_WARUNEK=1)
-        dodaj('or '+rekord_slownika[5],zapytanie)
+    if rekord_slownika[4] == 2:     # (tylko rekordy słownika mające CZY_WARUNEK=2)
+        whenk = ' and ID_POZ regexp 190|192 zaślepka'
+        dodaj('or '+rekord_slownika[5]+whenk,zapytanie)
 dodaj(')\n;',zapytanie)             # dołączenie do tekstu zapytania ');'
 #%%
 # zapisanie tekstu zapytania P05F1 do pliku
-with open('P05F2v2.sql','w') as plik:
+with open('P05F2v2.sql','w',encoding='utf8') as plik:
     for linia in zapytanie:
         plik.write(linia[1]+'\n')

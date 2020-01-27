@@ -52,10 +52,19 @@ for i,j in zip(a[6::2],a[7::2]):
 def z_wark(dmpkrek=list()): # na wejściu lista (rekord słownika DMPK)
     warunek = dmpkrek[5]
     reszta  = dmpkrek[6:-1]
-    dodatek = warunek + ' and regexp' + reszta[1] # 
+    ind=0
+    for opw,war in zip(reszta[0::2],reszta[1::2]):
+        if opw=='P':
+            op='and'
+        elif opw=='N':
+            op='and not'
+        whenk = op + war
+    ind+=1
+    dodatek = warunek + ' **regexp** ' + whenk #  to_do: wykorzystanie dmpkattrcols[ind]
     return dodatek # np. and ID_POZ regexp '^(190|192)$'
 
 dmpkattr=['A0','A1','A2','A3','CZY_WARUNEK','WIDP','ID_POZ','KOMENTARZ']
+dmpkattrcols=['ID_POZ']
 rek = ['0','1','2','3','2','nr_klienta6 is null','P','^(190|192)$','test']
 #print(rek[6:-1])
 print(z_wark(rek))
