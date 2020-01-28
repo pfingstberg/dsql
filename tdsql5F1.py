@@ -70,8 +70,8 @@ for a in ATRLIS:                    # dołączenie do tekstu zapytania wszystkic
 #%%
 ile1=sum(rekord_slownika[4]==1 for rekord_slownika in dmpk)
 ile2=sum(rekord_slownika[4]==2 for rekord_slownika in dmpk)
-# -----------------------------------------------------------------------------!! WRK
-# dodanie klauzuli case z której wychodzi SID_PRODUKTU_MBD (pozostałe atrybuty produktowe analogicznie)
+# -----------------------------------------------------------------------------
+# dodanie klauzuli case z której wychodzi SID_PRODUKTU_MBD z sufiksem F (pozostałe atrybuty produktowe analogicznie)
 dodaj('  ,  case',zapytanie)        # dołączenie do tekstu zapytania 'case'
 if ile1>0:
     for rekord_slownika in dmpk:
@@ -81,6 +81,18 @@ if ile1>0:
 else:
     dodaj('         when 1=1 then null',zapytanie)
 dodaj('     end as SID_PRODUKTU_MBD_F',zapytanie) # dołączenie do tekstu zapytania 'end as SID_PRODUKTU_MBD_F'
+#------------------------------------------------------------------------------
+# dodanie klauzuli case z której wychodzi PRIORYTET z sufiksem _F
+dodaj('  ,  case',zapytanie)        # dołączenie do tekstu zapytania 'case'
+if ile1>0:
+    for rekord_slownika in dmpk:
+        if rekord_slownika[4] == 1:     # (tylko rekordy słownika mające CZY_WARUNEK=1)
+            dodaj('         when '+rekord_slownika[5]+' then '+str(rekord_slownika[0]),zapytanie)
+    dodaj('         else null',zapytanie)
+else:
+    dodaj('         when 1=1 then null',zapytanie)
+dodaj('     end as PRIORYTET_F',zapytanie) # dołączenie do tekstu zapytania 'end as PRIORYTET_F'
+
 #------------------------------------------------------------------------------
 dodaj('  ,  1   as SCIEZKA',zapytanie)  # bo warunek CZY_WARUNEK porównujemy z 1
 dodaj('from ',zapytanie)            # dołączenie do tekstu zapytania 'from'
