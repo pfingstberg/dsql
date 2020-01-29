@@ -70,6 +70,13 @@ for a in ATRLIS:                    # dołączenie do tekstu zapytania wszystkic
 #%%
 ile1=sum(rekord_slownika[4]==1 for rekord_slownika in dmpk)
 ile2=sum(rekord_slownika[4]==2 for rekord_slownika in dmpk)
+#------------------------------------------------------------------------------
+# dodane w SCIEZKA=2 w wersji do późniejszego respektowania warunków kolumnowych 
+# trzech atrybutów o wartociach null - dla wyrównania struktury
+dodaj('  ,  cast(null as DECIMAL(5,0)) as SID_PRODUKTU_MBD_F',zapytanie)
+dodaj('  ,  cast(null as DECIMAL(5,0)) as PRIORYTET',zapytanie)
+dodaj('  ,  cast(null as DECIMAL(5,0)) as PRIORYTET_MAPOWANIA_PROD_MBD_F',zapytanie)
+"""
 # -----------------------------------------------------------------------------!! WRK
 # dodanie klauzuli case z której wychodzi SID_PRODUKTU_MBD z sufiksem _F(pozostałe atrybuty produktowe analogicznie)
 dodaj('  ,  case',zapytanie)        # dołączenie do tekstu zapytania 'case'
@@ -92,8 +99,19 @@ if ile1>0:
 else:
     dodaj('         when 1=1 then null',zapytanie)
 dodaj('     end as PRIORYTET_F',zapytanie) # dołączenie do tekstu zapytania 'end as PRIORYTET_F'
-
 #------------------------------------------------------------------------------
+# dodanie klauzuli case z której wychodzi PRIORYTET_MAPOWANIA_PROD z sufiksem _F
+dodaj('  ,  case',zapytanie)        # dołączenie do tekstu zapytania 'case'
+if ile1>0:
+    for rekord_slownika in dmpk:
+        if rekord_slownika[4] == 2:     # (tylko rekordy słownika mające CZY_WARUNEK=2)
+            dodaj('         when '+rekord_slownika[5]+' then '+str(rekord_slownika[1]),zapytanie)
+    dodaj('         else null',zapytanie)
+else:
+    dodaj('         when 1=1 then null',zapytanie)
+dodaj('     end as PRIORYTET_MAPOWANIA_PROD_F',zapytanie) # dołączenie do tekstu zapytania 'end as PRIORYTET_MAPOWANIA_PROD_F'
+#------------------------------------------------------------------------------
+"""
 dodaj('  ,  2   as SCIEZKA',zapytanie)  # bo warunek CZY_WARUNEK porównujemy z 2
 dodaj('from ',zapytanie)            # dołączenie do tekstu zapytania 'from'
 dodaj(BAZA+'.'+TABELA,zapytanie)    # dołączenie do tekstu zapytania nazwy schematu i tabeli

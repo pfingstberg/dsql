@@ -92,7 +92,17 @@ if ile1>0:
 else:
     dodaj('         when 1=1 then null',zapytanie)
 dodaj('     end as PRIORYTET_F',zapytanie) # dołączenie do tekstu zapytania 'end as PRIORYTET_F'
-
+#------------------------------------------------------------------------------
+# dodanie klauzuli case z której wychodzi PRIORYTET_MAPOWANIA_PROD z sufiksem _F
+dodaj('  ,  case',zapytanie)        # dołączenie do tekstu zapytania 'case'
+if ile1>0:
+    for rekord_slownika in dmpk:
+        if rekord_slownika[4] == 1:     # (tylko rekordy słownika mające CZY_WARUNEK=1)
+            dodaj('         when '+rekord_slownika[5]+' then '+str(rekord_slownika[1]),zapytanie)
+    dodaj('         else null',zapytanie)
+else:
+    dodaj('         when 1=1 then null',zapytanie)
+dodaj('     end as PRIORYTET_MAPOWANIA_PROD_F',zapytanie) # dołączenie do tekstu zapytania 'end as PRIORYTET_MAPOWANIA_PROD_F'
 #------------------------------------------------------------------------------
 dodaj('  ,  1   as SCIEZKA',zapytanie)  # bo warunek CZY_WARUNEK porównujemy z 1
 dodaj('from ',zapytanie)            # dołączenie do tekstu zapytania 'from'

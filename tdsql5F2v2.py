@@ -99,7 +99,7 @@ for a in ATRLIS:                    # dołączenie do tekstu zapytania wszystkic
 #%%
 ile1=sum(rekord_slownika[4]==1 for rekord_slownika in dmpk)
 ile2=sum(rekord_slownika[4]==2 for rekord_slownika in dmpk)
-# -----------------------------------------------------------------------------!! WRK
+# -----------------------------------------------------------------------------
 # dodanie klauzuli case z której wychodzi SID_PRODUKTU_MBD z sufiksem _F(pozostałe atrybuty produktowe analogicznie)
 dodaj('  ,  case',zapytanie)        # dołączenie do tekstu zapytania 'case'
 if ile2>0:
@@ -126,8 +126,21 @@ if ile2>0:
     dodaj('         else null',zapytanie)
 else:
     dodaj('         when 1=1 then null',zapytanie)
-dodaj('     end as PRIORYTET_F',zapytanie) # dołączenie do tekstu zapytania 'end as SID_PRODUKTU_MBD_F'
-
+dodaj('     end as PRIORYTET_F',zapytanie) # dołączenie do tekstu zapytania 'end as PRIORYTET_F'
+#------------------------------------------------------------------------------
+# dodanie klauzuli case z której wychodzi PRIORYTET_MAPOWANIA_PROD z sufiksem _F
+dodaj('  ,  case',zapytanie)        # dołączenie do tekstu zapytania 'case'
+if ile2>0:
+    for rekord_slownika in dmpk:
+        if rekord_slownika[4] == 2:     # (tylko rekordy słownika mające CZY_WARUNEK=2)
+            # tu trzeba stworzyć fragment z warunków kolumnowych i uzupełnić część w 'when'
+            warunek = rekord_slownika[5]
+            dodatek = z_wark(rekord_slownika,dmpkattrcols)
+            dodaj('         when '+warunek+dodatek+' then '+str(rekord_slownika[1]),zapytanie)
+    dodaj('         else null',zapytanie)
+else:
+    dodaj('         when 1=1 then null',zapytanie)
+dodaj('     end as PRIORYTET_MAPOWANIA_PROD_F',zapytanie) # dołączenie do tekstu zapytania 'end as PRIORYTET_MAPOWANIA_PROD_F'
 #------------------------------------------------------------------------------
 dodaj('  ,  2   as SCIEZKA',zapytanie)  # bo warunek CZY_WARUNEK porównujemy z 2
 dodaj('from ',zapytanie)            # dołączenie do tekstu zapytania 'from'
