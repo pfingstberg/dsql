@@ -3,7 +3,91 @@
 _robocze fragmenty kodu
 """
 #%%
+import json
+with open('bookmarks-2020-06-13.Dell.json','r',encoding='utf-8') as fj:
+    tree0 = json.load(fj)
+# szukam słownika najniższego poziomu (nie mającego klucza 'children' 
+# i odczytuję wartośCI kluczy 'title' i 'uri')
+a=tree0['children']     #   lista
+tree1=a[0]              #   dict, Bookmarks Menu
+tree2=a[1]              #   dict, Bookmarks Toolbar
 
+test  = tree0['children'][0]['children'][12]['children'][8]
+testB = tree0['children'][1]['children'][ 1]['children'][2]
+
+
+if 'children' in [key for key in test]:
+    test_t=test['title']
+    test_u=test['uri']
+else:
+    test_t=None
+    test_u=None
+
+#print(tree1['root'])
+for key in tree1:
+    #print(key,type(key),key=='title')
+    if key == 'title':
+        print(key, tree1[key])
+
+#for key in tree1.keys():
+#    print(key)
+    
+#for key,val in tree1.items():
+    #print(key)
+    #print(val)
+#%%
+import pickle 
+# Pickle the 'tree0' dictionary using the highest protocol available into file 'tree0.pickl'
+with open('tree0.pickle', 'wb') as f: 
+      pickle.dump(tree0, f, pickle.HIGHEST_PROTOCOL) 
+
+#%%
+import datetime as dt
+import time as tm
+
+#dt.datetime.fromtimestamp(tm.time())
+
+dtnow = dt.datetime.fromtimestamp(tm.time())
+dtnow
+
+dtnow.year, dtnow.month, dtnow.day, dtnow.hour, dtnow.minute, dtnow.second # get year, month, day, etc.from a datetime
+#%%
+x = lambda a : a + 10
+print(x(5)) 
+
+add = lambda a,b: a+b
+print(add(3,6))
+#%%
+import numpy as np
+r=np.array(range(36))
+r2=np.reshape(r,(6,6))
+
+w1=r.reshape(36)[::7]
+w2=range(36)[::7]
+r2[2:4,2:4]
+#%%
+people = ['Dr. Christopher Brooks', 'Dr. Kevyn Collins-Thompson', 'Dr. VG Vinod Vydiswaran', 'Dr. Daniel Romero']
+
+def split_title_and_name(person):
+    return person.split()[0] + ' ' + person.split()[-1]
+
+#option 1
+for person in people:
+  print(split_title_and_name(person))
+  #print(split_title_and_name(person) == (lambda x: x.split()[0] + ' ' + x.split()[-1])(person))
+  #print(   split_title_and_name(person) == (lambda x:x.split()[0]+' '+x.split()[-1](person))      )
+  print( (lambda x:x.split()[0]+' '+x.split()[-1]) (person)  )
+
+#option 2
+#list(map(split_title_and_name, people)) == list(map(lambda x:x.split()[0]+' '+x.split()[-1]   , people ))
+#%%
+lowercase = 'abcdefghijklmnopqrstuvwxyz'
+digits = '0123456789'
+
+answer = [a+b+c+d for a in lowercase for b in lowercase for c in digits for d in digits]
+print (answer)
+
+#%%
 import time, datetime
 a = datetime.datetime.now()
 time.sleep(0.5)
