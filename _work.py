@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-_robocze fragmenty kodu
+_robocze fragmenty kodu(ów)
 """
 #%%
 import json
